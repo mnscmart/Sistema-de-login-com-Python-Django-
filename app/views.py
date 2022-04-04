@@ -26,6 +26,7 @@ def store(request):
         user = User.objects.create_user(request.POST['user'], request.POST['email'], request.POST['password'])
         user.first_name = request.POST['name']
         user.save()
+        user.user_permissions.add(28)
         data['msg'] = 'Usuário cadastrado com sucesso!'
         data['class'] = 'alert-success'
     return render(request,'create.html',data)
@@ -51,8 +52,16 @@ def dologin(request):
 #Pagina inicial do dashboard
 def dashboard(request):
     return render  (request,'dashboard/home.html')
-    
+
 #Logout do sistema
 def logouts(request):
+    logout(request)
+    return redirect('/painel/')
+
+#Alterar a senha
+def changePassword(request):
+    user = User.objects.get(email=request.user.email)
+    user.set_password('new password')
+    user.save()
     logout(request)
     return redirect('/painel/')
